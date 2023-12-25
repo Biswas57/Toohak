@@ -1,0 +1,38 @@
+[1mdiff --git a/src/quiz.ts b/src/quiz.ts[m
+[1mindex b47d7f1..536e963 100644[m
+[1m--- a/src/quiz.ts[m
+[1m+++ b/src/quiz.ts[m
+[36m@@ -32,12 +32,18 @@[m [mexport function adminQuizList(authUserId: number) {[m
+   const ownedQuizzes = data.quizzes.filter(quiz => quiz.quizOwnerId === authUserId);[m
+ [m
+   const adminQuizListReturnObject = { quizzes: [] as Array<{quizId: number, name: string}> };[m
+[31m-  ownedQuizzes.forEach(ownedQuiz => {[m
+[32m+[m[32m  /*ownedQuizzes.forEach(ownedQuiz => {[m
+     adminQuizListReturnObject.quizzes.push({[m
+       quizId: ownedQuiz.quizId,[m
+       name: ownedQuiz.name,[m
+     });[m
+[31m-  });[m
+[32m+[m[32m  });*/[m
+[32m+[m[32m  console.log(data.quizzes)[m
+[32m+[m[32m  for(const quiz of data.quizzes){[m
+[32m+[m[32m    if(quiz.quizOwnerId === authUserId){[m
+[32m+[m[32m      adminQuizListReturnObject.quizzes.push(quiz);[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+ [m
+   // returns list of quizzes if given valid authUserId[m
+   return adminQuizListReturnObject;[m
+[1mdiff --git a/src/server.ts b/src/server.ts[m
+[1mindex 3818e59..ea0d308 100644[m
+[1m--- a/src/server.ts[m
+[1m+++ b/src/server.ts[m
+[36m@@ -45,7 +45,7 @@[m [mapp.get('/echo', (req: Request, res: Response) => {[m
+ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {[m
+   const token = req.query.token as string;[m
+   const User = validateAndReturnAuthUserId(token);[m
+[31m-  if ('error' in User) {[m
+[32m+[m[32m  if (typeof User !== 'number') {[m
+     return res.status(401).json(User);[m
+   }[m
+   const ret = adminQuizList(User);[m
